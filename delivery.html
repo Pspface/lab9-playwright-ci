@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Delivery Pro</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eaf0ff;
+            margin: 0;
+            padding: 30px;
+            color: #222;
+        }
+
+        main {
+            max-width: 400px;
+            margin: 50px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px #0002;
+        }
+
+        h1 {
+            text-align: center;
+            color: #5546e8;
+        }
+
+        p {
+            color: #666;
+        }
+
+        label {
+            display: block;
+            margin: 18px 0 8px;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 9px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #5546e8;
+            color: white;
+            border: 0;
+            margin-top: 22px;
+            cursor: pointer;
+        }
+
+        #result {
+            background: #eeedff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        #error {
+            color: #c62828;
+            background: #ffebee;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<main>
+    <h1>🚚 Delivery Pro</h1>
+
+    <p>Рассчитайте стоимость вашей доставки</p>
+
+    <form id="form" novalidate>
+
+        <label for="amount">Сумма заказа (тенге)</label>
+            <input
+                id="amount"
+                type="text"
+                inputmode="decimal"
+                placeholder="Введите сумму"
+            >
+
+        <label for="zone">Регион доставки</label>
+        <select id="zone">
+            <option value="city">По городу</option>
+            <option value="region">По региону</option>
+        </select>
+
+        <button type="submit">Рассчитать доставку</button>
+
+    </form>
+
+    <div id="error" role="alert" hidden></div>
+
+    <div id="result" role="status" hidden>
+        <b>Ваш расчёт</b>
+        <p>Заказ: <span id="order-result"></span></p>
+        <p>Доставка: <span id="shipping-result"></span></p>
+        <h3>Итого: <span id="total-result"></span></h3>
+    </div>
+
+</main>
+
+<script>
+    const form = document.getElementById('form');
+    const amountInput = document.getElementById('amount');
+    const zoneSelect = document.getElementById('zone');
+    const result = document.getElementById('result');
+    const error = document.getElementById('error');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        result.hidden = true;
+        error.hidden = true;
+        error.textContent = '';
+
+        const rawAmount = amountInput.value.trim();
+
+        if (rawAmount === '') {
+            error.textContent = 'Введите сумму заказа.';
+            error.hidden = false;
+            return;
+        }
+
+        const amount = Number(rawAmount);
+
+        if (!Number.isFinite(amount)) {
+            error.textContent = 'Введите корректное число.';
+            error.hidden = false;
+            return;
+        }
+
+        if (amount < 0) {
+            error.textContent = 'Сумма заказа не может быть отрицательной.';
+            error.hidden = false;
+            return;
+        }
+
+        const deliveryCost = amount >= 10000
+            ? 0
+            : (zoneSelect.value === 'city' ? 1000 : 2000);
+
+        const total = amount + deliveryCost;
+
+        document.getElementById('order-result').textContent =
+            String(amount);
+
+        document.getElementById('shipping-result').textContent =
+            String(deliveryCost);
+
+        document.getElementById('total-result').textContent =
+            String(total);
+
+        result.hidden = false;
+    });
+</script>
+
+</body>
+</html>
