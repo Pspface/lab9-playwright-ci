@@ -8,7 +8,7 @@ HTML_FILE = Path(__file__).parent / "delivery.html"
 
 
 def open_form(page: Page) -> None:
-    page.goto(HTML_FILE.resolve().as_uri())
+    page.goto("http://127.0.0.1:8000/delivery.html")
 
 
 def calculate(page: Page, amount: str, zone: str = "city") -> None:
